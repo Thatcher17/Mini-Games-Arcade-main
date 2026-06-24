@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Parkour - Retro Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #1a1a1a;
+            font-family: Arial, sans-serif;
+        }
+        
+        #gameContainer {
+            position: relative;
+        }
+        
+        canvas {
+            display: block;
+            background-color: #87ceeb;
+            border: 4px solid #333;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+        
+        #ui {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #fff;
+            font-size: 16px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 100;
+        }
+        
+
+        
+        #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 1000;
+            display: none;
+            min-width: 300px;
+        }
+        
+        #gameOver h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        
+        #gameOver p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        
+        #gameOver button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        #gameOver button:hover {
+            background-color: #45a049;
+        }
+
+        /* Start menu button styles */
+        .menuStart { font-size:20px; padding:18px 36px; background:#ffb703; color:#111; border:none; border-radius:10px; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,0.5); }
+        .menuSmall { font-size:14px; padding:10px 14px; background:#333; color:#fff; border:none; border-radius:8px; cursor:pointer; }
+        .menuSmall:hover, .menuStart:hover { filter:brightness(1.05); }
+
+        /* Shop grid */
+        .shopGrid { display:grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap:10px; max-height:480px; overflow:auto; }
+        .skinCard { background:#1a1a1a; padding:10px; border-radius:8px; text-align:center; color:#fff; cursor:pointer; border:2px solid transparent; transition:transform .12s ease, border-color .12s ease; }
+        .skinCard:hover { transform:translateY(-6px); border-color:#ffb703; }
+        .skinThumb { width:64px; height:64px; margin:0 auto 8px; border-radius:6px; background:#222; display:flex; align-items:center; justify-content:center; }
+        .previewBox { background:#0f0f0f; padding:12px; border-radius:8px; min-width:200px; color:#fff; }
+        .rarity { display:inline-block; padding:3px 8px; border-radius:10px; font-size:11px; margin-left:6px; }
+        .rarity.common { background:#3b3b3b; color:#ddd; }
+        .rarity.uncommon { background:#2b8f4c; color:#fff; }
+        .rarity.rare { background:#4a6cff; color:#fff; }
+        .rarity.legendary { background:linear-gradient(90deg,#ffd54f,#ff8a00); color:#111; }
+
+        .purchasedAnim { animation:purchaseFlash .45s ease; }
+        @keyframes purchaseFlash { 0% { transform:scale(1); box-shadow:0 0 0 rgba(255,204,0,0); } 50% { transform:scale(1.06); box-shadow:0 6px 18px rgba(255,204,0,0.35); } 100% { transform:scale(1); box-shadow:0 0 0 rgba(255,204,0,0); } }
+    </style>
+</head>
+<body>
+    <a href="../arcade.html" style="position:fixed;top:15px;left:15px;background:rgba(76,175,80,0.85);color:white;padding:6px 14px;border-radius:20px;text-decoration:none;font-size:0.85rem;font-weight:bold;z-index:9999;font-family:sans-serif;">← Arcade</a>
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="960" height="640"></canvas>
+        <div id="ui">
+            <div>Level: <span id="level">1</span></div>
+            <div>Score: <span id="score">0</span></div>
+            <div style="margin-top: 10px; font-weight: bold; color: #ffaa00; font-size: 18px;">
+                Health: <span id="health">500</span>/500
+            </div>
+            <div style="margin-top: 6px;">Power: <span id="power">None</span></div>
+            <div style="margin-top: 6px;">Combo: <span id="combo">0</span></div>
+            <div style="margin-top: 6px;">Enemies: <span id="enemies">0</span></div>
+            
+            <div style="margin-top: 15px; display: flex; gap: 10px; align-items: center;">
+                <div style="background:rgba(0,0,0,0.6);padding:6px 10px;border-radius:6px;">Coins: <span id="coins">0</span></div>
+                <button id="shopBtn" type="button" style="padding:4px 8px; cursor:pointer;">Shop</button>
+                <button id="lockerBtn" type="button" style="padding:4px 8px; cursor:pointer;">Locker</button>
+            </div>
+        </div>
+
+        <div id="gameOver">
+            <h1 id="gameOverTitle">Game Over</h1>
+            <p id="gameOverText"></p>
+            <div style="margin-top:12px; display: flex; flex-direction: column; gap: 10px;">
+                <button id="retryBtn">Retry</button>
+                <button id="backToMenuBtn">Back to Menu</button>
+                <button id="gameOverShop">Shop</button>
+            </div>
+        </div>
+
+        <!-- Start menu -->
+        <div id="startMenu" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.75);z-index:10000;">
+            <div style="background:#111;padding:24px;border-radius:8px;color:#fff;min-width:420px;text-align:center;font-family:Arial,sans-serif;">
+                <h1 style="margin:0 0 12px">Pixel Parkour</h1>
+                <p style="margin:0 0 12px">Click Start to begin</p>
+
+                <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-top:10px;">
+                    <button id="openShopFromMenu" type="button" class="menuSmall">Shop</button>
+                    <button id="startButton" type="button" class="menuStart">Start</button>
+                    <button id="openLockerFromMenu" type="button" class="menuSmall">Locker</button>
+                </div>
+
+                <div style="margin-top:12px;font-size:12px;color:#ccc">Coins and purchased skins persist across sessions</div>
+            </div>
+        </div>
+
+        <!-- Shop modal -->
+        <div id="shopModal" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.75);z-index:10001;">
+            <div style="background:#111;padding:18px;border-radius:8px;color:#fff;min-width:760px;font-family:Arial,sans-serif;display:flex;gap:12px;">
+                <div style="flex:1;">
+                    <h2 style="margin-top:0">Shop</h2>
+                    <div id="shopGrid" class="shopGrid"></div>
+                </div>
+                <div style="width:260px;">
+                    <div class="previewBox">
+                        <div id="previewName" style="font-weight:bold;font-size:18px">Select a skin</div>
+                        <div id="previewRarity" style="margin-top:6px"></div>
+                        <div id="previewCanvas" style="width:200px;height:140px;margin:8px auto;background:#000;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff">Preview</div>
+                        <div id="previewDesc" style="font-size:12px;color:#ccc;margin-top:8px"></div>
+                        <div style="margin-top:12px;text-align:right">
+                            <button id="buyButton" type="button" style="padding:8px 12px;margin-right:8px;">Buy</button>
+                            <button id="equipButton" type="button" style="padding:8px 12px;">Equip</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="position:absolute;bottom:20px;right:20px"><button id="closeShop" type="button">Close</button></div>
+        </div>
+
+        <!-- Confirmation modal -->
+        <div id="confirmModal" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:10003;">
+            <div style="background:#111;padding:18px;border-radius:8px;color:#fff;min-width:320px;font-family:Arial,sans-serif;text-align:center;">
+                <div id="confirmText" style="margin-bottom:12px">Confirm purchase?</div>
+                <div style="display:flex;justify-content:center;gap:12px"><button id="confirmYes" type="button">Yes</button><button id="confirmNo" type="button">No</button></div>
+            </div>
+        </div>
+
+        <!-- Locker modal -->
+        <div id="lockerModal" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.75);z-index:10001;">
+            <div style="background:#111;padding:18px;border-radius:8px;color:#fff;min-width:760px;font-family:Arial,sans-serif;display:flex;gap:12px;">
+                <div style="flex:1;">
+                    <h2 style="margin-top:0">Locker</h2>
+                    <div id="lockerList" class="shopGrid"></div>
+                </div>
+                <div style="width:260px;">
+                    <div class="previewBox">
+                        <div id="lockerPreviewName" style="font-weight:bold;font-size:18px">Select a skin</div>
+                        <div id="lockerPreviewCanvas" style="width:200px;height:140px;margin:8px auto;background:#000;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff">Preview</div>
+                        <div style="margin-top:12px;text-align:right"><button id="closeLocker" type="button">Close</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Ensure some global compatibility
+        window.gameCanvas = document.getElementById('gameCanvas');
+    </script>
+    
+    <script type="module" src="src/main.js"></script>
+</body>
+</html>

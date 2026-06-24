@@ -1,0 +1,469 @@
+body {
+    background-color: #f5e6ca;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.bakery-container {
+    background-color: #fffaf0;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    text-align: center;
+    border: 5px solid #d2b48c;
+    width: 400px;
+}
+
+h1 {
+    color: #8b4513;
+    margin-bottom: 0.5rem;
+}
+
+#stats {
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+    color: #5d4037;
+}
+
+#dough-container {
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.dough {
+    width: 150px;
+    height: 100px;
+    background-color: #fdf5e6;
+    border-radius: 50%;
+    border: 3px solid #e3dac9;
+    transition: transform 0.1s;
+    box-shadow: inset 0 -5px 10px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.dough:active {
+    transform: scale(0.9) translateY(5px);
+}
+
+#progress-bar-container {
+    width: 100%;
+    height: 20px;
+    background-color: #eee;
+    border-radius: 10px;
+    margin-top: 20px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+#progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: #d2b48c;
+    transition: width 0.3s;
+}
+
+#status {
+    font-weight: bold;
+    height: 1.5rem;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#slice {
+    position: absolute;
+    top: 50%;
+    left: 20%;
+    width: 60%;
+    height: 6px;
+    background-color: #8b4513;
+    border-radius: 3px;
+    transform: translateY(-50%);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+#slice-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+}
+
+#slice-target {
+    position: absolute;
+    top: 50%;
+    left: 20%;
+    width: 60%;
+    height: 4px;
+    border: 2px dashed #2e7d32;
+    border-radius: 2px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    animation: pulse 1s infinite;
+}
+
+#oven-container {
+    margin: 20px 0;
+    text-align: center;
+}
+
+#oven {
+    width: 120px;
+    height: 100px;
+    background-color: #444;
+    margin: 0 auto;
+    border-radius: 10px 10px 0 0;
+    position: relative;
+    border: 4px solid #333;
+}
+
+#oven-door {
+    width: 80%;
+    height: 60%;
+    background-color: rgba(0, 0, 0, 0.5);
+    margin: 15% auto;
+    border: 2px solid #666;
+    border-radius: 5px;
+}
+
+#oven-inside {
+    position: absolute;
+    top: 15%;
+    left: 10%;
+    width: 80%;
+    height: 60%;
+    background-color: #000;
+    z-index: -1;
+}
+
+.dragging {
+    opacity: 0.8;
+    z-index: 1000;
+}
+
+.dough.draggable {
+    cursor: grab;
+}
+
+.dough.draggable:active {
+    cursor: grabbing;
+}
+
+#reset-btn {
+    background-color: #4CAF50;
+    margin-top: 10px;
+}
+
+#reset-btn:hover {
+    background-color: #45a049;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+
+#knife-cursor {
+    position: fixed;
+    font-size: 3rem;
+    pointer-events: none;
+    z-index: 1000;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
+}
+
+.slicing-cursor #dough-container {
+    cursor: none !important;
+}
+
+.slicing-cursor #dough {
+    cursor: none !important;
+}
+
+#tools {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+#knife-pickup {
+    font-size: 2.5rem;
+    cursor: grab;
+    transition: transform 0.2s;
+    user-select: none;
+}
+
+#knife-pickup:hover {
+    transform: scale(1.2) rotate(-10deg);
+}
+
+#knife-pickup:active {
+    cursor: grabbing;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: #d2b48c;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.bakery-container.oven-mode {
+    background-color: #333;
+    border-color: #555;
+}
+
+.bakery-container.oven-mode h1, 
+.bakery-container.oven-mode #stats {
+    color: #ff9800;
+}
+
+.baked {
+    background-color: #a0522d !important;
+    box-shadow: 0 0 20px #ff9800 !important;
+}
+
+#back-btn {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    background-color: rgba(139,69,19,0.85);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: bold;
+    z-index: 90;
+    transition: background-color 0.2s;
+}
+
+#back-btn:hover {
+    background-color: #8b4513;
+}
+
+#secret-trigger {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #8b4513;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s, background-color 0.2s;
+    z-index: 90;
+}
+
+#secret-trigger:hover {
+    background-color: #5d4037;
+    transform: scale(1.05);
+}
+
+#secret-menu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fffaf0;
+    padding: 25px;
+    border: 4px solid #d2b48c;
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.3);
+    z-index: 100;
+    text-align: center;
+    width: 250px;
+}
+
+#secret-menu h3 {
+    margin-top: 0;
+    color: #8b4513;
+    border-bottom: 2px solid #d2b48c;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+#secret-input {
+    padding: 10px;
+    width: 90%;
+    margin-bottom: 15px;
+    border: 2px solid #d2b48c;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+}
+
+#secret-input:focus {
+    border-color: #8b4513;
+}
+
+#secret-menu .button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+#secret-menu button {
+    margin: 0;
+    flex: 1;
+}
+
+#close-secret {
+    background-color: #9e9e9e;
+}
+
+#close-secret:hover {
+    background-color: #757575;
+}
+
+/* ---- SHOP ---- */
+#shop-trigger {
+    position: fixed;
+    bottom: 60px;
+    right: 20px;
+    background-color: #e65100;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.2s, background-color 0.2s;
+    z-index: 90;
+}
+#shop-trigger:hover { background-color: #bf360c; transform: scale(1.05); }
+
+#shop-panel {
+    position: fixed;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    background: #fffaf0;
+    border: 4px solid #d2b48c;
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.25);
+    z-index: 95;
+    width: 270px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 0 0 12px 0;
+}
+
+#shop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #8b4513;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 10px 10px 0 0;
+    font-weight: bold;
+    font-size: 1.05rem;
+    position: sticky;
+    top: 0;
+}
+#close-shop {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+}
+#close-shop:hover { opacity: 0.7; }
+
+#shop-money-display {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #4caf50;
+    padding: 10px 0 6px;
+    border-bottom: 1px solid #e8d5bb;
+}
+
+#shop-items { padding: 8px 12px; }
+
+.shop-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fdf5e6;
+    border: 1px solid #e8d5bb;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    gap: 8px;
+}
+.shop-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+.shop-item-name { font-weight: bold; font-size: 0.9rem; color: #5d4037; }
+.shop-item-desc { font-size: 0.75rem; color: #888; }
+.shop-item-owned { font-size: 0.75rem; color: #4caf50; font-weight: bold; }
+
+.shop-buy-btn {
+    background: #e65100;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 12px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.1s;
+    flex-shrink: 0;
+}
+.shop-buy-btn:hover:not(:disabled) { background: #bf360c; transform: scale(1.05); }
+.shop-buy-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+
+#shop-stats {
+    margin: 4px 12px 0;
+    padding: 8px 12px;
+    background: #fdf5e6;
+    border: 1px solid #e8d5bb;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    color: #5d4037;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}

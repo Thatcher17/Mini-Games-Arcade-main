@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Games Arcade</title>
+    <link rel="icon" href="data:,">
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('https://res.cloudinary.com/hello-tickets/image/upload/c_limit,f_auto,q_auto,w_1300/v1715129487/qvkofnazak8zixpdxhmt.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .page-header {
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            max-width: 800px;
+            width: 100%;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .page-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .page-header p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .arcade-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-align: center;
+            background: linear-gradient(90deg, #ff6ec7, #ffe06e, #6efff4, #ff6ec7);
+            background-size: 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 4s linear infinite;
+            margin-bottom: 0.4rem;
+        }
+
+        .arcade-subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.95rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% }
+            100% { background-position: 300% }
+        }
+
+        .game-count {
+            color: rgba(255,255,255,0.35);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .game-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            max-width: 700px;
+        }
+
+        .game-card {
+            background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.25));
+            backdrop-filter: blur(5px);
+            padding: 2rem 1.5rem;
+            border-radius: 20px;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-align: center;
+            width: 160px;
+            border: 1px solid rgba(255,255,255,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--card-color1), var(--card-color2));
+            opacity: 0;
+            transition: opacity 0.2s;
+            border-radius: 20px;
+            z-index: 0;
+        }
+
+        .game-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+        }
+
+        .game-card:hover::before {
+            opacity: 0.15;
+        }
+
+        .game-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .game-icon {
+            font-size: 3.5rem;
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+
+        .game-name {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .game-tag {
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .play-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        nav {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 12px 0;
+            text-align: center;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 18px;
+            margin: 0 5px;
+            display: inline-block;
+            border-radius: 5px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.95rem;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        #mobile-warning {
+            display: none;
+            background: rgba(200,50,50,0.85);
+            color: white;
+            text-align: center;
+            padding: 10px 16px;
+            font-size: 0.95em;
+            font-weight: bold;
+            position: sticky;
+            top: 52px;
+            z-index: 99;
+            backdrop-filter: blur(4px);
+        }
+        @media (max-width: 768px) {
+            #mobile-warning { display: block; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="arcade.html">My Games</a>
+        <a href="index.html#apps">My Apps</a>
+        <a href="index.html#presentations">Presentations</a>
+        <a href="index.html#about">About Me</a>
+    </nav>
+    <div style="margin-top: 70px;"></div>
+    <div id="mobile-warning">⚠️ Games don't currently work on mobile — play on a computer for the best experience!</div>
+    <div class="page-header">
+        <h1>🎮 My Games</h1>
+        <p>Here are all the games I've built — pick one and have fun!</p>
+    </div>
+    <div class="arcade-title">Mini Games</div>
+    <div class="arcade-subtitle">Arcade</div>
+    <div class="game-count">5 Games Available</div>
+    <div class="game-list">
+        <a href="BreadBaker/index.html" class="game-card" style="--card-color1:#ff9800;--card-color2:#f44336;">
+            <span class="play-badge">Play</span>
+            <span class="game-icon">🍞</span>
+            <div class="game-name">Bread Baker</div>
+            <div class="game-tag">Simulation</div>
+        </a>
+        <a href="Fishing/index.html" class="game-card" style="--card-color1:#2196F3;--card-color2:#00BCD4;">
+            <span class="play-badge">Play</span>
+            <span class="game-icon">🎣</span>
+            <div class="game-name">Fishing</div>
+            <div class="game-tag">Arcade</div>
+        </a>
+        <a href="racecarfrenzy/index.html" class="game-card" style="--card-color1:#f44336;--card-color2:#ff5722;">
+            <span class="play-badge">Play</span>
+            <span class="game-icon">🚗</span>
+            <div class="game-name">Traffic Dodger</div>
+            <div class="game-tag">Racing</div>
+        </a>
+        <a href="zombie run/index.html" class="game-card" style="--card-color1:#4CAF50;--card-color2:#8BC34A;">
+            <span class="play-badge">Play</span>
+            <span class="game-icon">🏃</span>
+            <div class="game-name">Pixel Parkour</div>
+            <div class="game-tag">Platformer</div>
+        </a>
+        <a href="amtd/index.html" class="game-card" style="--card-color1:#9C27B0;--card-color2:#673AB7;">
+            <span class="play-badge">Play Me</span>
+            <span class="game-icon">🗼</span>
+            <div class="game-name">Tower Defense</div>
+            <div class="game-tag">Strategy</div>
+        </a>
+    </div>
+</body>
+</html>

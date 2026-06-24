@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Throwaway Game</title>
+  <style>
+    html,body{height:100%;margin:0;background:#000;}
+    #gameCanvas{display:block;margin:0 auto;background:#000}
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+  <style>
+    /* Start menu button styles */
+    .menuStart { font-size:20px; padding:18px 36px; background:#ffb703; color:#111; border:none; border-radius:10px; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,0.5); }
+    .menuSmall { font-size:14px; padding:10px 14px; background:#333; color:#fff; border:none; border-radius:8px; cursor:pointer; }
+    .menuSmall:hover, .menuStart:hover { filter:brightness(1.05); }
+
+    /* Shop grid */
+    .shopGrid { display:grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap:10px; max-height:480px; overflow:auto; }
+    .skinCard { background:#1a1a1a; padding:10px; border-radius:8px; text-align:center; color:#fff; cursor:pointer; border:2px solid transparent; transition:transform .12s ease, border-color .12s ease; }
+    .skinCard:hover { transform:translateY(-6px); border-color:#ffb703; }
+    .skinThumb { width:64px; height:64px; margin:0 auto 8px; border-radius:6px; background:#222; display:flex; align-items:center; justify-content:center; }
+    .previewBox { background:#0f0f0f; padding:12px; border-radius:8px; min-width:200px; color:#fff; }
+    .rarity { display:inline-block; padding:3px 8px; border-radius:10px; font-size:11px; margin-left:6px; }
+    .rarity.common { background:#3b3b3b; color:#ddd; }
+    .rarity.uncommon { background:#2b8f4c; color:#fff; }
+    .rarity.rare { background:#4a6cff; color:#fff; }
+    .rarity.legendary { background:linear-gradient(90deg,#ffd54f,#ff8a00); color:#111; }
+
+    .purchasedAnim { animation:purchaseFlash .45s ease; }
+    @keyframes purchaseFlash { 0% { transform:scale(1); box-shadow:0 0 0 rgba(255,204,0,0); } 50% { transform:scale(1.06); box-shadow:0 6px 18px rgba(255,204,0,0.35); } 100% { transform:scale(1); box-shadow:0 0 0 rgba(255,204,0,0); } }
+  </style>
+
+  <!-- HUD & UI overlays -->
+  <div id="hud" style="position:fixed;left:10px;top:10px;color:#fff;z-index:999;display:flex;gap:10px;align-items:center;font-family:Arial, sans-serif;">
+    <div id="coins" style="background:rgba(0,0,0,0.6);padding:6px 10px;border-radius:6px;">0</div>
+    <button id="shopBtn" type="button" style="padding:6px 10px;cursor:pointer;pointer-events:auto" onclick="showShop()">Shop</button>
+    <button id="lockerBtn" type="button" style="padding:6px 10px;cursor:pointer;pointer-events:auto" onclick="showLocker()">Locker</button>
+  </div>
+
+  <!-- Start menu -->
+  <div id="startMenu" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.75);z-index:10000;">
+    <div style="background:#111;padding:24px;border-radius:8px;color:#fff;min-width:420px;text-align:center;font-family:Arial,sans-serif;">
+      <h1 style="margin:0 0 12px">Pixel Parkour</h1>
+      <p style="margin:0 0 12px">Click Start to begin</p>
+
+      <!-- Big start centered, small shop/locker to sides -->
+      <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-top:10px;">
+        <button id="openShopFromMenu" type="button" class="menuSmall" style="pointer-events:auto" onclick="showShop()">Shop</button>
+        <button id="startButton" type="button" class="menuStart" tabindex="0" style="pointer-events:auto" onclick="startGame()">Start</button>
+        <button id="openLockerFromMenu" type="button" class="menuSmall" style="pointer-events:auto" onclick="showLocker()">Locker</button>
+      </div>
+
+      <div style="margin-top:12px;font-size:12px;color:#ccc">Coins and purchased skins persist across sessions</div>
+    </div>
+  </div>
+
+  <!-- Shop modal (grid + preview) -->
+  <div id="shopModal" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.75);z-index:10001;">
+    <div style="background:#111;padding:18px;border-radius:8px;color:#fff;min-width:760px;font-family:Arial,sans-serif;display:flex;gap:12px;">
+      <div style="flex:1;">
+        <h2 style="margin-top:0">Shop</h2>
+        <div id="shopGrid" class="shopGrid"></div>
+      </div>
+      <div style="width:260px;">
+        <div class="previewBox">
+          <div id="previewName" style="font-weight:bold;font-size:18px">Select a skin</div>
+          <div id="previewRarity" style="margin-top:6px"></div>
+          <div id="previewCanvas" style="width:200px;height:140px;margin:8px auto;background:#000;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff">Preview</div>
+          <div id="previewDesc" style="font-size:12px;color:#ccc;margin-top:8px"></div>
+          <div style="margin-top:12px;text-align:right">
+            <button id="buyButton" type="button" style="padding:8px 12px;margin-right:8px;pointer-events:auto">Buy</button>
+            <button id="equipButton" type="button" style="padding:8px 12px;pointer-events:auto">Equip</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="position:absolute;bottom:20px;right:20px"><button id="closeShop" type="button" style="pointer-events:auto">Close</button></div>
+  </div>
+
+  <!-- Confirmation modal -->
+  <div id="confirmModal" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:10003;">
+    <div style="background:#111;padding:18px;border-radius:8px;color:#fff;min-width:320px;font-family:Arial,sans-serif;text-align:center;">
+      <div id="confirmText" style="margin-bottom:12px">Confirm purchase?</div>
+      <div style="display:flex;justify-content:center;gap:12px"><button id="confirmYes" type="button" style="pointer-events:auto">Yes</button><button id="confirmNo" type="button" style="pointer-events:auto">No</button></div>
+    </div>
+  </div>
+
+  <!-- Locker modal (grid + preview) -->
+  <div id="lockerModal" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.75);z-index:10001;">
+    <div style="background:#111;padding:18px;border-radius:8px;color:#fff;min-width:760px;font-family:Arial,sans-serif;display:flex;gap:12px;">
+      <div style="flex:1;">
+        <h2 style="margin-top:0">Locker</h2>
+        <div id="lockerList" class="shopGrid"></div>
+      </div>
+      <div style="width:260px;">
+        <div class="previewBox">
+          <div id="lockerPreviewName" style="font-weight:bold;font-size:18px">Select a skin</div>
+          <div id="lockerPreviewCanvas" style="width:200px;height:140px;margin:8px auto;background:#000;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff">Preview</div>
+          <div style="margin-top:12px;text-align:right"><button id="closeLocker" type="button" style="pointer-events:auto">Close</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game over / defeat screen -->
+  <div id="gameOver" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.75);z-index:10002;">
+    <div style="background:#111;padding:24px;border-radius:8px;color:#fff;min-width:340px;text-align:center;font-family:Arial,sans-serif;">
+      <h1 id="gameOverTitle">Game Over</h1>
+      <pre id="gameOverText" style="white-space:pre-wrap;color:#ddd"></pre>
+      <div style="margin-top:12px">
+        <button id="retryBtn" type="button" style="padding:8px 14px;margin:6px;pointer-events:auto">Retry</button>
+        <button id="backToMenuBtn" type="button" style="padding:8px 14px;margin:6px;pointer-events:auto">Back to Menu</button>
+        <button id="gameOverShop" type="button" style="padding:8px 14px;margin:6px;pointer-events:auto">Shop</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Serve via a static server for modules/fetch: python -m http.server or npx http-server -->
+  <script>
+    (function(){
+      const canvas = document.getElementById('gameCanvas');
+      function resize(){
+        const dpr = window.devicePixelRatio || 1;
+        // Fit to window while clamping size
+        canvas.width = Math.min(1024, Math.max(640, Math.floor(window.innerWidth * 0.9))) * dpr;
+        canvas.height = Math.min(768, Math.max(480, Math.floor(window.innerHeight * 0.9))) * dpr;
+        canvas.style.width = Math.floor(canvas.width / dpr) + "px";
+        canvas.style.height = Math.floor(canvas.height / dpr) + "px";
+      }
+      window.addEventListener('resize', resize);
+      resize();
+      // Expose canvas globally for existing scripts that expect it
+      window.gameCanvas = canvas;
+    })();
+  </script>
+
+  <!-- Load main as an ES module so `import` works -->
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

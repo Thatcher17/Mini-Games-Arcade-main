@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bread Baker</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bakery-container">
+        <h1>Bakery: Bread Baker</h1>
+        <div id="stats">
+            <p>Kneads: <span id="knead-count">0</span> / <span id="target-kneads">200</span></p>
+            <p>Money: $<span id="money-count">0</span></p>
+            <p id="status">Time to knead some dough!</p>
+        </div>
+        <div id="dough-container">
+            <div id="dough" class="dough">
+                <div id="slice-target" class="hidden"></div>
+                <canvas id="slice-canvas" class="hidden"></canvas>
+                <div id="slice" class="hidden"></div>
+            </div>
+        </div>
+        <div id="oven-container" class="hidden">
+            <div id="oven">
+                <div id="oven-door"></div>
+                <div id="oven-inside"></div>
+            </div>
+            <p>Drag the bread into the oven!</p>
+        </div>
+        <div id="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div id="tools" class="hidden">
+            <div id="knife-pickup" title="Pick up knife">🔪</div>
+            <button id="oven-btn" disabled>Put in Oven</button>
+            <button id="reset-btn" class="hidden">Knead More Bread</button>
+        </div>
+    </div>
+
+    <a id="back-btn" href="../arcade.html">← Arcade</a>
+    <button id="secret-trigger">Secret Menu</button>
+    <button id="shop-trigger">🛒 Shop</button>
+
+    <!-- SHOP PANEL -->
+    <div id="shop-panel" class="hidden">
+        <div id="shop-header">
+            <span>🛒 Bakery Shop</span>
+            <button id="close-shop">✕</button>
+        </div>
+        <div id="shop-money-display">💰 $<span id="shop-money">0</span></div>
+        <div id="shop-items">
+
+            <div class="shop-item" id="item-power-gloves">
+                <div class="shop-item-info">
+                    <span class="shop-item-name">💪 Power Gloves</span>
+                    <span class="shop-item-desc">+1 knead per click (max 5)</span>
+                    <span class="shop-item-owned">Owned: <span id="owned-power-gloves">0</span>/5</span>
+                </div>
+                <button class="shop-buy-btn" data-item="power-gloves" data-cost="50">$50</button>
+            </div>
+
+            <div class="shop-item" id="item-apprentice">
+                <div class="shop-item-info">
+                    <span class="shop-item-name">👨‍🍳 Apprentice Baker</span>
+                    <span class="shop-item-desc">Auto-kneads 1x per second</span>
+                    <span class="shop-item-owned">Owned: <span id="owned-apprentice">0</span></span>
+                </div>
+                <button class="shop-buy-btn" data-item="apprentice" data-cost="80">$80</button>
+            </div>
+
+            <div class="shop-item" id="item-master-baker">
+                <div class="shop-item-info">
+                    <span class="shop-item-name">👨‍🍳 Master Baker</span>
+                    <span class="shop-item-desc">Auto-kneads 5x per second</span>
+                    <span class="shop-item-owned">Owned: <span id="owned-master-baker">0</span></span>
+                </div>
+                <button class="shop-buy-btn" data-item="master-baker" data-cost="300">$300</button>
+            </div>
+
+            <div class="shop-item" id="item-golden-knife">
+                <div class="shop-item-info">
+                    <span class="shop-item-name">🗡️ Golden Knife</span>
+                    <span class="shop-item-desc">Auto-slices bread instantly</span>
+                    <span class="shop-item-owned" id="owned-golden-knife-label">Not owned</span>
+                </div>
+                <button class="shop-buy-btn" data-item="golden-knife" data-cost="120">$120</button>
+            </div>
+
+            <div class="shop-item" id="item-turbo-oven">
+                <div class="shop-item-info">
+                    <span class="shop-item-name">🔥 Turbo Oven</span>
+                    <span class="shop-item-desc">Bread bakes 3x faster</span>
+                    <span class="shop-item-owned" id="owned-turbo-oven-label">Not owned</span>
+                </div>
+                <button class="shop-buy-btn" data-item="turbo-oven" data-cost="175">$175</button>
+            </div>
+
+            <div class="shop-item" id="item-second-kitchen">
+                <div class="shop-item-info">
+                    <span class="shop-item-name">🏠 Second Kitchen</span>
+                    <span class="shop-item-desc">Auto-bakes a loaf every 30s for $100</span>
+                    <span class="shop-item-owned" id="owned-second-kitchen-label">Not owned</span>
+                </div>
+                <button class="shop-buy-btn" data-item="second-kitchen" data-cost="600">$600</button>
+            </div>
+
+        </div>
+        <div id="shop-stats">
+            <div>⚡ Click power: <span id="stat-click-power">1</span></div>
+            <div>🤖 Auto-knead/sec: <span id="stat-auto-rate">0</span></div>
+        </div>
+    </div>
+
+    <div id="secret-menu" class="hidden">
+        <h3>Secret Menu</h3>
+        <input type="text" id="secret-input" placeholder="Enter code...">
+        <div class="button-group">
+            <button id="apply-code">Apply</button>
+            <button id="close-secret">Close</button>
+        </div>
+    </div>
+
+    <div id="knife-cursor" class="hidden">🔪</div>
+
+    <script src="script.js"></script>
+</body>
+</html>

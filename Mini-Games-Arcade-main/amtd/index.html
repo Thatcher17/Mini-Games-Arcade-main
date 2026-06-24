@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allmighty Tower Defense - 2D Stickmen</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a href="../arcade.html" style="position:fixed;top:15px;left:15px;background:rgba(156,39,176,0.85);color:white;padding:6px 14px;border-radius:20px;text-decoration:none;font-size:0.85rem;font-weight:bold;z-index:9999;font-family:sans-serif;">← Arcade</a>
+    <div id="game-container">
+        <div id="ui">
+            <div class="stats">
+                <span>Money: $<span id="money">200</span></span>
+                <span>Lives: <span id="lives">5</span></span>
+                <span>Wave: <span id="wave">0</span></span>
+            </div>
+        </div>
+        <div id="upgrade-menu" class="hidden">
+            <h3 id="upgrade-title">Soldier</h3>
+            <div class="upgrade-stats">
+                <div>DMG: <span id="stat-dmg">15</span> <span class="bonus">→ +5</span></div>
+                <div>RNG: <span id="stat-range">120</span> <span class="bonus">→ +20</span></div>
+                <div>SPD: <span id="stat-spd">40</span> <span class="bonus">→ -2</span></div>
+            </div>
+            <button id="upgrade-btn">Upgrade ($100)</button>
+            <button id="close-upgrade">Close</button>
+        </div>
+        <div id="unit-bar">
+            <div class="unit active" data-unit="basic" title="Soldier ($50)">
+                <canvas class="unit-preview" width="65" height="65"></canvas>
+                <div class="unit-price">$50</div>
+            </div>
+            <div class="unit" data-unit="fast" title="Speedy ($75)">
+                <canvas class="unit-preview" width="65" height="65"></canvas>
+                <div class="unit-price">$75</div>
+            </div>
+            <div class="unit" data-unit="heavy" title="Giant ($150)">
+                <canvas class="unit-preview" width="65" height="65"></canvas>
+                <div class="unit-price">$150</div>
+            </div>
+            <div class="unit" data-unit="long" title="Sniper ($200)">
+                <canvas class="unit-preview" width="65" height="65"></canvas>
+                <div class="unit-price">$200</div>
+            </div>
+            <div class="unit" data-unit="mage" title="Wizard ($300)">
+                <canvas class="unit-preview" width="65" height="65"></canvas>
+                <div class="unit-price">$300</div>
+            </div>
+            <div class="unit" data-unit="farm" title="Farm ($250)">
+                <canvas class="unit-preview" width="65" height="65"></canvas>
+                <div class="unit-price">$250</div>
+            </div>
+        </div>
+        <div id="start-screen">
+            <div id="start-modal">
+                <h1>Allmighty Tower Defense</h1>
+                <p>Protect the path from the goblin invasion!</p>
+                <button id="start-game-btn">START GAME</button>
+            </div>
+        </div>
+        <canvas id="gameCanvas"></canvas>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

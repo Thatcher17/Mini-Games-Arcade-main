@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
+    <title>Thatcher's Portfolio</title>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        * { box-sizing: border-box; }
+        body {
+            background-image: url('https://res.cloudinary.com/hello-tickets/image/upload/c_limit,f_auto,q_auto,w_1300/v1715129487/qvkofnazak8zixpdxhmt.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            min-height: 100vh;
+            animation: fadeIn 0.5s ease-in;
+            display: flex;
+            flex-direction: column;
+        }
+        nav {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            display: inline-block;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        main { flex: 1; }
+        .content {
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            max-width: 800px;
+            margin: 30px auto;
+            text-align: center;
+        }
+        .content h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .content p {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        .status-section {
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: center;
+        }
+        .status-section h2 {
+            color: #4fc3f7;
+            margin-top: 0;
+        }
+        .status-item {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px 25px;
+            margin: 8px;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        .status-item:hover {
+            transform: scale(1.05);
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .status-item .emoji {
+            font-size: 1.5em;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .quick-links {
+            max-width: 800px;
+            margin: 20px auto;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 0 20px;
+        }
+        .quick-link {
+            flex: 1;
+            min-width: 200px;
+            padding: 25px;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.3s, background-color 0.3s;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+        .quick-link:hover {
+            transform: translateY(-5px);
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .quick-link .emoji {
+            font-size: 2em;
+            display: block;
+            margin-bottom: 10px;
+        }
+        footer {
+            background-color: rgba(0, 0, 0, 0.8);
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        footer a {
+            color: #4fc3f7;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+        footer a:hover {
+            color: #81d4fa;
+        }
+        footer p {
+            margin: 5px 0;
+            font-size: 0.9em;
+            color: #ccc;
+        }
+
+        /* ---- Secrets section ---- */
+        .secrets-box {
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: center;
+        }
+        .secrets-box h2 { color: #ffd700; margin-top: 0; }
+        .challenge-question {
+            font-size: 1.1em;
+            margin: 12px 0 8px;
+        }
+        .challenge-input {
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1em;
+            width: 180px;
+            text-align: center;
+        }
+        .challenge-input::placeholder { color: rgba(255,255,255,0.4); }
+        .challenge-btn {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 10px 28px;
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            color: #1a0a00;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .challenge-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+        .challenge-error { color: #ff6b6b; margin-top: 8px; font-size: 0.9em; }
+        .challenge-progress { color: rgba(255,255,255,0.5); font-size: 0.82em; margin-bottom: 10px; }
+        .secret-code-card {
+            display: inline-block;
+            background: rgba(255,215,0,0.1);
+            border: 1px solid rgba(255,215,0,0.4);
+            border-radius: 12px;
+            padding: 18px 24px;
+            margin: 10px;
+            min-width: 200px;
+        }
+        .secret-code-card .code {
+            font-family: monospace;
+            font-size: 1.5em;
+            color: #ffd700;
+            letter-spacing: 2px;
+            display: block;
+            margin: 6px 0 4px;
+        }
+        .secret-code-card .code-label { font-size: 0.8em; color: rgba(255,255,255,0.55); }
+        .secret-code-card .code-effect { font-size: 0.95em; color: rgba(255,255,255,0.8); margin-top:4px; }
+        .apps-title {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-align: center;
+            color: white;
+            margin-bottom: 0.4rem;
+        }
+        .app-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 18px;
+        }
+        .app-card {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 260px;
+            padding: 18px 22px;
+            background: linear-gradient(135deg, rgba(0,0,0,0.55), rgba(0,0,0,0.35));
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 16px;
+            color: white;
+            text-decoration: none;
+            transition: transform 0.25s, background-color 0.25s, box-shadow 0.25s;
+        }
+        .app-card.primary-app {
+            min-width: 320px;
+            padding: 22px 26px;
+            background: linear-gradient(135deg, rgba(66,153,225,0.35), rgba(0,0,0,0.55));
+            border-color: rgba(120,190,255,0.4);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.28);
+        }
+        .app-card.primary-app .app-icon {
+            font-size: 2.5em;
+            width: 58px;
+            height: 58px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.12);
+        }
+        .app-card.primary-app .app-name {
+            font-size: 1.25em;
+            letter-spacing: 0.3px;
+        }
+        .app-card.primary-app .app-desc {
+            color: rgba(255,255,255,0.85);
+        }
+        .app-card:hover {
+            transform: translateY(-4px);
+            background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(0,0,0,0.45));
+            box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+        }
+        .app-card .app-icon {
+            font-size: 2.2em;
+            line-height: 1;
+        }
+        .app-card .app-meta {
+            text-align: left;
+        }
+        .app-card .app-name {
+            display: block;
+            font-size: 1.15em;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .app-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff9800, #ff6f00);
+            color: white;
+            font-size: 0.65em;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-left: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .app-card .app-desc {
+            display: block;
+            font-size: 0.9em;
+            color: rgba(255,255,255,0.7);
+        }
+        .app-card.static-app {
+            cursor: default;
+        }
+        .app-card.static-app:hover {
+            transform: none;
+            box-shadow: none;
+            background: linear-gradient(135deg, rgba(0,0,0,0.55), rgba(0,0,0,0.35));
+        }
+        @media (max-width: 600px) {
+            nav a { padding: 8px 12px; margin: 2px; font-size: 0.9em; }
+            .content h1 { font-size: 1.8em; }
+            .quick-link { min-width: 140px; }
+            .app-card { min-width: 100%; }
+        }
+        #mobile-warning {
+            display: none;
+            background: rgba(200,50,50,0.85);
+            color: white;
+            text-align: center;
+            padding: 10px 16px;
+            font-size: 0.95em;
+            font-weight: bold;
+            text-shadow: none;
+            position: sticky;
+            top: 52px;
+            z-index: 99;
+            backdrop-filter: blur(4px);
+        }
+        @media (max-width: 768px) {
+            #mobile-warning { display: block; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" onclick="showSection('home'); return false;">Home</a>
+        <a href="arcade.html" onclick="return true;">My Games</a>
+        <a href="#godot-games" onclick="showSection('godot-games'); return false;">Godot Games</a>
+        <a href="#apps" onclick="showSection('apps'); return false;">My Apps</a>
+        <a href="#presentations" onclick="showSection('presentations'); return false;">Presentations</a>
+        <a href="#about" onclick="showSection('about'); return false;">About Me</a>
+    </nav>
+    <div id="mobile-warning">⚠️ Games don't currently work on mobile — play on a computer for the best experience!</div>
+    <main>
+        <!-- HOME SECTION -->
+        <div id="section-home" class="page-section">
+            <div class="content">
+                <h1>👋 Thatcher's Portfolio</h1>
+                <p>Welcome! I'm a new coder building games and apps. Explore my projects below and check back for updates!</p>
+            </div>
+
+            <div class="status-section">
+                <h2>🔨 Currently Working On</h2>
+                <div class="status-item">
+                    <span class="emoji">🎮</span>
+                    New game projects
+                </div>
+                <div class="status-item">
+                    <span class="emoji">📱</span>
+                    App development
+                </div>
+                <div class="status-item">
+                    <span class="emoji">🌐</span>
+                    This portfolio site
+                </div>
+            </div>
+
+            <div class="quick-links">
+                <a href="arcade.html" class="quick-link">
+                    <span class="emoji">🎮</span>
+                    <strong>My Games</strong>
+                    <p>Check out my game projects</p>
+                </a>
+                <a href="#apps" onclick="showSection('apps'); return false;" class="quick-link">
+                    <span class="emoji">📱</span>
+                    <strong>My Apps</strong>
+                    <p>See my app creations</p>
+                </a>
+                <a href="#about" onclick="showSection('about'); return false;" class="quick-link">
+                    <span class="emoji">👤</span>
+                    <strong>About Me</strong>
+                    <p>Learn more about me</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- APPS SECTION -->
+        <div id="section-apps" class="page-section" style="display:none;">
+            <div class="content">
+                <h1 class="apps-title">📱 My Apps</h1>
+                <p>I'm working on some cool apps — check back soon!</p>
+            </div>
+            <div class="app-list">
+                <a href="https://dayload.lovable.app" target="_blank" rel="noopener noreferrer" class="app-card">
+                    <span class="app-icon">📱</span>
+                    <span class="app-meta">
+                        <span class="app-name">Dayload</span>
+                        <span class="app-desc">Open the Dayload app</span>
+                    </span>
+                </a>
+                <a href="https://willhiswork-3vd3w21f6-thatchers-projects-ffc6526c.vercel.app" target="_blank" rel="noopener noreferrer" class="app-card">
+                    <span class="app-icon">➕</span>
+                    <span class="app-meta">
+                        <span class="app-name">Tracer +<span class="app-badge">Work in Progress</span></span>
+                        <span class="app-desc">Check out the beta version</span>
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <!-- PRESENTATIONS SECTION -->
+        <div id="section-presentations" class="page-section" style="display:none;">
+            <div class="content">
+                <h1>🎤 Presentations</h1>
+                <p>Quick looks at my projects, ideas, and what I’m building next.</p>
+            </div>
+            <div class="app-list">
+                <a href="https://www.figma.com/proto/HkADiqRXqgevVmRrXooVly/Untitled?node-id=70-6&scaling=contain&content-scaling=fixed&t=H7LKLZvlqbjvxMW3-1" target="_blank" rel="noopener noreferrer" class="app-card">
+                    <span class="app-icon">🎨</span>
+                    <span class="app-meta">
+                        <span class="app-name">Figma Presentation</span>
+                        <span class="app-desc">View my design presentation</span>
+                    </span>
+                </a>
+                <a href="https://www.figma.com/proto/evgHjNpEmG3BOXP9nAJjyV/sandbox?node-id=63-665&starting-point-node-id=63%3A665&t=3jhSKKx1aEHE1nlK-1" target="_blank" rel="noopener noreferrer" class="app-card">
+                    <span class="app-icon">🎨</span>
+                    <span class="app-meta">
+                        <span class="app-name">Sandbox Presentation</span>
+                        <span class="app-desc">View my sandbox design</span>
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <!-- ABOUT SECTION -->
+        <div id="section-about" class="page-section" style="display:none;">
+            <div class="content">
+                <h1>👤 About Me</h1>
+                <p>Hi, I'm Thatcher! I'm a new coder who loves building games and apps. I'm always learning new things and working on exciting projects. Check out my games and apps to see what I've been up to!</p>
+            </div>
+            <div class="status-section">
+                <h2>🛠️ Skills</h2>
+                <div class="status-item">
+                    <span class="emoji">🌐</span>
+                    HTML / CSS
+                </div>
+                <div class="status-item">
+                    <span class="emoji">⚡</span>
+                    JavaScript
+                </div>
+                <div class="status-item">
+                    <span class="emoji">🎮</span>
+                    Game Development
+                </div>
+            </div>
+
+            <!-- SECRETS SECTION -->
+            <div class="secrets-box">
+                <h2>🔐 Secrets</h2>
+
+                <!-- Locked: challenge -->
+                <div id="secrets-challenge">
+                    <p style="color:rgba(255,255,255,0.7);margin-bottom:16px;">Answer 3 questions about my games to unlock the secret codes!</p>
+                    <div class="challenge-progress" id="challenge-progress">Question 1 of 3</div>
+                    <div class="challenge-question" id="challenge-q"></div>
+                    <div style="margin-top:10px;">
+                        <input class="challenge-input" id="challenge-ans" placeholder="Your answer..." autocomplete="off" />
+                    </div>
+                    <div><button class="challenge-btn" id="challenge-submit">Submit</button></div>
+                    <div class="challenge-error" id="challenge-error"></div>
+                </div>
+
+                <!-- Unlocked: codes -->
+                <div id="secrets-unlocked" style="display:none;">
+                    <p style="color:#a0ffb0;margin-bottom:16px;">✅ Nice work! Here are the secret codes for <strong>Bread Baker</strong>:</p>
+                    <div>
+                        <div class="secret-code-card">
+                            <span class="code-label">CODE 1</span>
+                            <span class="code">KNEADMAX</span>
+                            <span class="code-effect">Instantly completes kneading</span>
+                        </div>
+                        <div class="secret-code-card">
+                            <span class="code-label">CODE 2</span>
+                            <span class="code">BAKEOFF</span>
+                            <span class="code-effect">Instantly bakes your bread</span>
+                        </div>
+                    </div>
+                    <p style="color:rgba(255,255,255,0.45);font-size:0.8em;margin-top:16px;">Enter these in the secret menu inside the Bread Baker game 🍞</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- GODOT GAMES SECTION -->
+        <div id="section-godot-games" class="page-section" style="display:none;">
+            <div class="content">
+                <h1>🎮 Godot Games</h1>
+                <p>Games created with Godot Engine</p>
+            </div>
+            <div class="app-list">
+                <a href="http://localhost:8060/tmp_js_export.html" target="_blank" rel="noopener noreferrer" class="app-card">
+                    <span class="app-icon">🌾</span>
+                    <span class="app-meta">
+                        <span class="app-name">Farmstead</span>
+                        <span class="app-desc">A farming simulation game</span>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function showSection(name) {
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(function(s) {
+                s.style.display = 'none';
+            });
+            // Show the requested section
+            var el = document.getElementById('section-' + name);
+            if (el) {
+                el.style.display = 'block';
+                el.style.animation = 'fadeIn 0.4s ease-in';
+            }
+            // Save current section to sessionStorage
+            sessionStorage.setItem('currentSection', name);
+            // Update the URL hash
+            if (name === 'home') {
+                history.pushState(null, '', 'index.html');
+            } else {
+                history.pushState(null, '', '#' + name);
+            }
+            window.scrollTo(0, 0);
+        }
+
+        // On page load, check hash and show the right section
+        (function() {
+            var hash = window.location.hash.replace('#', '');
+            var savedSection = sessionStorage.getItem('currentSection');
+            
+            if (hash === 'apps' || hash === 'presentations' || hash === 'about') {
+                showSection(hash);
+            } else if (savedSection && (savedSection === 'apps' || savedSection === 'presentations' || savedSection === 'about')) {
+                showSection(savedSection);
+            }
+        })();
+
+        // Handle browser back/forward
+        window.addEventListener('popstate', function() {
+            var hash = window.location.hash.replace('#', '');
+            if (hash === 'apps' || hash === 'presentations' || hash === 'about') {
+                showSection(hash);
+            } else {
+                showSection('home');
+            }
+        });
+
+        // ---- Secrets Challenge ----
+        var questions = [
+            { q: '🎮 How many games are in the Mini Games Arcade?', a: '5' },
+            { q: '🍞 In Bread Baker, how many kneads do you need to complete the kneading stage?', a: '200' },
+            { q: '🍞 What is the name of the baking game in the arcade? (one word)', a: 'bread baker' }
+        ];
+        var currentQ = 0;
+        var secretsUnlocked = false;
+
+        function loadQuestion() {
+            document.getElementById('challenge-progress').textContent = 'Question ' + (currentQ + 1) + ' of ' + questions.length;
+            document.getElementById('challenge-q').textContent = questions[currentQ].q;
+            document.getElementById('challenge-ans').value = '';
+            document.getElementById('challenge-error').textContent = '';
+            document.getElementById('challenge-ans').focus();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadQuestion();
+        });
+
+        document.getElementById('challenge-submit').addEventListener('click', checkAnswer);
+        document.getElementById('challenge-ans').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') checkAnswer();
+        });
+
+        function checkAnswer() {
+            if (secretsUnlocked) return;
+            var ans = document.getElementById('challenge-ans').value.trim().toLowerCase();
+            var correct = questions[currentQ].a.toLowerCase();
+            if (ans === correct) {
+                currentQ++;
+                if (currentQ >= questions.length) {
+                    secretsUnlocked = true;
+                    document.getElementById('secrets-challenge').style.display = 'none';
+                    document.getElementById('secrets-unlocked').style.display = 'block';
+                } else {
+                    loadQuestion();
+                }
+            } else {
+                document.getElementById('challenge-error').textContent = '❌ Not quite — try again!';
+                document.getElementById('challenge-ans').select();
+            }
+        }
+    </script>
+</body>
+</html>

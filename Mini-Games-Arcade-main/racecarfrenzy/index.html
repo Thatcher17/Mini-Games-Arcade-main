@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Traffic Dodger</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #1a1a2e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      overflow: hidden;
+    }
+    canvas {
+      border: 3px solid #e94560;
+      border-radius: 8px;
+      box-shadow: 0 0 30px rgba(233, 69, 96, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <a href="../arcade.html" style="position:fixed;top:15px;left:15px;background:rgba(244,67,54,0.85);color:white;padding:6px 14px;border-radius:20px;text-decoration:none;font-size:0.85rem;font-weight:bold;z-index:9999;font-family:sans-serif;">← Arcade</a>
+  <canvas id="gameCanvas" width="400" height="700"></canvas>
+  <script src="game.js"></script>
+</body>
+</html>
